@@ -60,22 +60,23 @@
                 }
             }
             
-            // --- Get All Parameters from URL ---
+            // --- Get All Parameters from your NEW URL ---
             const gender = params.get('q1_gender');
             const age = params.get('q2_age');
             const weight = parseFloat(params.get('q3_weight'));
             const height = parseFloat(params.get('q4_height'));
             const chronic = params.get('q5_chronic');
-            const weightChange = params.get('q6_weightChange');
-            const exercise = params.get('q7_exercise');
-            const sleep = params.get('q8_sleep');
-            const alcohol = params.get('q9_alcohol');
-            const smoking = params.get('q10_smoking');
-            const medication = params.get('q11_medication');
-            const food = params.get('q12_food');
-            const drinks = params.get('q13_drinks');
-            const stress = params.get('q14_stress');
-            const symptoms = params.get('q15_symptoms');
+            const blood = params.get('q6_blood'); // This is new, but has no logic in the PDF
+            const weightChange = params.get('q7_weightChange');
+            const exercise = params.get('q8_exercise');
+            const sleep = params.get('q9_sleep');
+            const alcohol = params.get('q10_alcohol');
+            const smoking = params.get('q11_smoking');
+            const medication = params.get('q12_medication');
+            const food = params.get('q13_food');
+            const drinks = params.get('q14_drinks');
+            const stress = params.get('q15_stress');
+            const symptoms = params.get('q16_symptoms');
 
 
             // --- Logic for displaying results based on PDF ---
@@ -114,7 +115,7 @@
                 createResultCard('الأمراض المزمنة', chronicText);
             }
             
-            // 6. Weight Change
+            // 6. Weight Change (Now from q7)
             let weightChangeText = '';
             if (weightChange === 'yes') {
                  weightChangeText = 'يعتبر الزيادة في الوزن عامل خطر كبير للإصابة بمرض الكبد الدهني، ويزداد بالتوازي مع مؤشر كتلة الجسم. الزيادة من الوزن يمكن أن يشكل عبئا كبيرا على الكبد، فقدان 5% - 10% من وزن الجسم مهم لصحة الكبد.';
@@ -124,7 +125,7 @@
             createResultCard('تغير الوزن', weightChangeText);
 
 
-            // 7. Physical Activity
+            // 7. Physical Activity (Now from q8)
             let exerciseText = '';
             const bmi = weight && height ? weight / ((height / 100) * (height / 100)) : 0;
             if (exercise === 'yes') { // User exercises LESS than 150 mins
@@ -144,7 +145,7 @@
             }
             createResultCard('النشاط البدني', exerciseText);
 
-            // 8. Sleep
+            // 8. Sleep (Now from q9)
             let sleepText = '';
             if (sleep === 'yes') {
                 sleepText = 'أنت تحصل على قسط كافٍ من النوم كل ليلة. وهذا يقلل من خطر الإصابة بالسمنة، حيث ثبت أن قلة النوم وجودته تساهم في زيادة الوزن.';
@@ -153,7 +154,7 @@
             }
             createResultCard('النوم', sleepText);
 
-            // 9. Alcohol
+            // 9. Alcohol (Now from q10)
             let alcoholText = '';
             if (gender === 'female' && alcohol === 'no') {
                 alcoholText = 'أنت تشرب كميات معتدلة من الكحول، والتي لا ينبغي أن يكون لها تأثير سلبي على الكبد إذا لم تكن هناك عوامل أخرى قد تصيب الكبد. ضعي في اعتبارك أن النساء أكثر حساسية للتأثيرات السامة للكحول من الرجال.';
@@ -166,7 +167,7 @@
             }
             createResultCard('استهلاك الكحول', alcoholText);
 
-            // 10. Smoking
+            // 10. Smoking (Now from q11)
             let smokingText = '';
              if (smoking === 'yes') {
                  smokingText = 'الكبد مسؤول عن معالجة الأدوية والكحول والسموم الأخرى لإزالتها من الجسم. والتدخين ينتج سموما والتي تسبب الالتهاب وتزيد من خطر الإصابة بأمراض الكبد.';
@@ -175,29 +176,29 @@
             }
              createResultCard('التدخين', smokingText);
 
-            // 11. Medication
+            // 11. Medication (Now from q12)
             if (medication === 'yes') {
                 createResultCard('الأدوية المزمنة', 'يمكن أن تؤثر بعض الأدوية سلبًا على الكبد فمن المهم جدا أن تعتني بالكبد.');
             }
 
-            // 12. Food
+            // 12. Food (Now from q13)
              if (food === 'yes') {
                  createResultCard('الأطعمة السكرية والدهنية', 'يؤدي تناول الأطعمة الدهنية والسكرية إلى زيادة كمية الدهون حول الكبد في الجسم السليم، الذي يساعد على إزالة السموم وإنتاج الصفراء للمساعدة على الهضم. ولكن مرض الكبد الدهني يضر بالكبد ويمنعه من العمل كما ينبغي. حاول أن تتناول نظام غذائي مليء بالأطعمة الصحية والعناصر الغذائية التي تدعم الكبد، مثل الفواكه والخضروات والمكسرات والأسماك والأفوكادو ودقيق الشوفان.');
              } else if (food === 'no') {
                   createResultCard('الأطعمة السكرية والدهنية', 'أحسنت! النظام الغذائي الصحي هو حجر الزاوية في صحة الكبد. ويجب تناول نظام غذائي مليء بالأطعمة الصحية العناصر الغذائية التي تدعم الكبد، مثل الفواكه والخضروات والأسماك والجوز والأفوكادو ودقيق الشوفان. الجوز والأسماك غنية بأحماض أوميغا 3 الدهنية التي يمكن أن تساعد في تحسين مستويات الدهون في الكبد وتقليل الالتهابات واستمر في الحد من الأطعمة التي تحتوي على نسبة عالية من الدهون المشبعة والسكر التي تصعب على الكبد القيام بوظيفته.');
              }
 
-            // 13. Drinks
+            // 13. Drinks (Now from q14)
             if (drinks === 'yes') {
                 createResultCard('المشروبات السكرية', 'الكثير من السكر لا يضر أسنانك فقط. ولكن يؤذي الكبد أيضا. شرب المشروبات المحلاة بالسكر مثل عصير الفاكهة والمشروبات الغازية يمكن أن يسبب الالتهابات وتراكم الدهون التي يمكن أن تؤدي إلى أمراض الكبد.');
             }
             
-            // 14. Stress
+            // 14. Stress (Now from q15)
             if (stress === 'yes') {
                  createResultCard('التعرض للتوتر', 'لقد ثبت أن التوتر والقلق اليومي يساهمان في تلف الكبد. خلال أوقات التوتر، حيث ينتج الكبد سكرا إضافيا من الجلوكوز لمنحك دفعة من الطاقة. إذا كنت تعاني من ضغط مزمن، فقد لا يتمكن جسمك من مواكبة هذا الارتفاع الإضافي في الجلوكوز، مما يزيد من خطر الإصابة بمرض السكري من النوع 2 وأمراض الكبد. حاول التحكم في مستويات التوتر لديك من خلال ممارسة الرياضة، التأمل والتنفس العميق مع نظام غذائي متوازن وأخذ وقت للاسترخاء.');
             }
 
-            // 15. Symptoms
+            // 15. Symptoms (Now from q16)
             if (symptoms) {
                 const symptomMap = {
                     'low_energy': 'انخفاض في مستويات الطاقة',
