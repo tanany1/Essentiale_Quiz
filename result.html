@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتيجة الاختبار - هل أنت معرض لخطر الإصابة بالكبد الدهني؟</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+        .result-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .result-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e3a8a; /* A deep blue color */
+            margin-bottom: 12px;
+        }
+        .result-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #334155;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-3xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-900">نتيجتك</h1>
+            <p class="text-lg text-gray-600 mt-2">بناءً على إجاباتك، إليك تحليل لعوامل الخطر المحتملة للإصابة بالكبد الدهني.</p>
+        </header>
+
+        <main id="results-container">
+            <!-- Results will be dynamically inserted here -->
+        </main>
+
+        <footer class="mt-8 text-center text-sm text-gray-500">
+            <p>هذه المعلومات هي لأغراض التوعية فقط ولا تعتبر بديلاً عن الاستشارة الطبية المتخصصة. يرجى استشارة الطبيب.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Function to get parameters from the URL
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const results = {};
+            for (const [key, value] of params) {
+                results[key] = value;
+            }
+            return results;
+        }
+
+        // Function to calculate BMI
+        function calculateBMI(weight, height) {
+            if (!weight || !height) return null;
+            const heightInMeters = parseFloat(height) / 100;
+            const weightInKg = parseFloat(weight);
+            if (heightInMeters === 0) return null;
+            return weightInKg / (heightInMeters * heightInMeters);
+        }
+
+        // Main function to display results
+        function displayResults() {
+            const params = getUrlParams();
+            const container = document.getElementById('results-container');
+            let content = '';
+
+            // --- 1. Demographic Questions ---
+            let demographicContent = '<h3>الأسئلة الديموغرافية</h3>';
+
+            // Gender
+            if (params.gender === 'male') {
+                demographicContent += '<p><strong>الجنس:</strong> يعتبر مرض الكبد الدهني أكثر شيوعًا بين الرجال أكثر من النساء بسبب أن الرجال لديهم متوسط مؤشر كتلة جسم أعلى ويميلون إلى شرب الكحول أكثر من النساء.</p>';
+            }
+
+            // BMI
+            const bmi = calculateBMI(params.weight, params.height);
+            if (bmi) {
+                let bmiText = '';
+                if (bmi < 18.5) {
+                    bmiText = `مؤشر كتلة الجسم لديك هو <strong>${bmi.toFixed(1)}</strong>. أنت تعاني من نقص في الوزن.`;
+                } else if (bmi >= 18.5 && bmi < 25) {
+                    bmiText = `مؤشر كتلة الجسم لديك هو <strong>${bmi.toFixed(1)}</strong>. وزنك يقع في النطاق الطبيعي.`;
+                } else if (bmi >= 25 && bmi < 30) {
+                    bmiText = `مؤشر كتلة الجسم لديك هو <strong>${bmi.toFixed(1)}</strong>. أنت تعاني من زيادة الوزن وهو أحد عوامل الخطر الرئيسية لمرض الكبد الدهني.`;
+                } else if (bmi >= 30 && bmi < 40) {
+                     bmiText = `مؤشر كتلة الجسم لديك هو <strong>${bmi.toFixed(1)}</strong>. أنت تعاني من السمنة والتي تعتبر عامل خطر للإصابة بمرض الكبد الدهني.`;
+                } else {
+                     bmiText = `مؤشر كتلة الجسم لديك هو <strong>${bmi.toFixed(1)}</strong>. أنت تعاني من سمنة مرضية وهي ترتبط ارتباطًا وثيقًا بالكبد الدهني، ومرض السكري، وأمراض القلب.`;
+                }
+                demographicContent += `<p><strong>مؤشر كتلة الجسم:</strong> ${bmiText}</p>`;
+            }
+
+            // Chronic Diseases
+            if (params.chronic) {
+                 let chronicText = '';
+                 if (params.chronic.includes('hypertension')) {
+                     chronicText += 'حوالي 49.5% من مرضى ارتفاع ضغط الدم لديهم كبد دهني. ';
+                 }
+                 if (params.chronic.includes('diabetes')) {
+                     chronicText += 'يزيد مرض السكري من خطر إصابتك بمرض الكبد الدهني غير الناجم عن شرب الكحول، وتحدث هذه الحالة على الأقل في نصف المصابين بداء السكري من النوع 2.';
+                 }
+                 if(chronicText) {
+                    demographicContent += `<p><strong>الأمراض المزمنة:</strong> ${chronicText}</p>`;
+                 }
+            }
+            content += `<div class="result-card">${demographicContent}</div>`;
+
+
+            // --- 2. Lifestyle and Medical History ---
+            let lifestyleContent = '<h3>أسئلة نمط الحياة والتاريخ الطبي</h3>';
+
+            // Weight Change
+            if (params.weightChange === 'yes') {
+                lifestyleContent += '<p><strong>تغير الوزن:</strong> تعتبر الزيادة في الوزن عامل خطر كبير للإصابة بمرض الكبد الدهني. فقدان 5%-10% من وزن الجسم مهم لصحة الكبد.</p>';
+            }
+
+            // Exercise
+            if (params.exercise === 'yes') { // User exercises LESS than 150 mins
+                 let exerciseText = 'يعتبر النشاط البدني مهمًا في مكافحة الوزن الزائد ومرض الكبد الدهني غير الكحولي. يوصى بالقيام بحوالي 150-200 دقيقة من النشاط البدني أسبوعيًا (مثل المشي السريع وركوب الدراجة). تذكر أن الوزن الصحي يساعد في الحفاظ على كبد صحي.';
+                 lifestyleContent += `<p><strong>النشاط البدني:</strong> ${exerciseText}</p>`;
+            } else if (params.exercise === 'no' && bmi >= 25) { // User exercises MORE than 150 mins but is overweight
+                 lifestyleContent += `<p><strong>النشاط البدني:</strong> كمية الوقت التي تخصصها للنشاط البدني في الأسبوع صحيحة. ومع ذلك، يجب عليك مراقبة نظامك الغذائي والحفاظ على نشاطك البدني على نفس المستوى.</p>`;
+            }
+
+            // Sleep
+            if (params.sleep === 'no') {
+                lifestyleContent += '<p><strong>النوم:</strong> تشير الدراسات البحثية إلى أن النوم غير الكافي هو أحد عوامل الخطر للإصابة بالسمنة وبالتالي التغيرات الدهنية في الكبد. يجب الحصول على قسط كافٍ من النوم.</p>';
+            }
+
+            // Alcohol
+            if (params.alcohol === 'yes') {
+                let alcoholText = (params.gender === 'female')
+                    ? 'النساء أكثر عرضة من الرجال لمخاطر الكحول. الإفراط في شرب الخمر يؤدي إلى إتلاف الكبد والتسبب في تليف الكبد.'
+                    : 'يشكل استهلاكك للكحول الأسبوعي خطرًا كبيرًا على الكبد. ويسرع من تطور أمراض أخرى وقد يتسبب في تليف الكبد الكحولي. حاول الإقلاع عن شرب الكحول.';
+                lifestyleContent += `<p><strong>استهلاك الكحول:</strong> ${alcoholText}</p>`;
+            }
+
+            // Smoking
+            if (params.smoking === 'yes') {
+                lifestyleContent += '<p><strong>التدخين:</strong> التدخين ينتج سمومًا تسبب الالتهاب وتزيد من خطر الإصابة بأمراض الكبد.</p>';
+            }
+
+            // Medication
+            if (params.medication === 'yes') {
+                 lifestyleContent += '<p><strong>الأدوية المزمنة:</strong> يمكن أن تؤثر بعض الأدوية سلبًا على الكبد، فمن المهم جدًا أن تعتني بالكبد.</p>';
+            }
+            
+            // Sugary/Fatty Food
+            if (params.food === 'yes') {
+                 lifestyleContent += '<p><strong>الأطعمة الدسمة أو السكرية:</strong> يؤدي تناول هذه الأطعمة إلى زيادة كمية الدهون حول الكبد. حاول أن تتناول نظامًا غذائيًا صحيًا يدعم الكبد.</p>';
+            }
+
+            // Sugary Drinks
+            if (params.drinks === 'yes') {
+                 lifestyleContent += '<p><strong>المشروبات السكرية:</strong> شرب المشروبات المحلاة بالسكر يمكن أن يسبب الالتهابات وتراكم الدهون التي يمكن أن تؤدي إلى أمراض الكبد.</p>';
+            }
+            
+            // Stress
+            if (params.stress === 'yes') {
+                lifestyleContent += '<p><strong>التوتر:</strong> لقد ثبت أن التوتر اليومي يساهم في تلف الكبد. حاول التحكم في مستويات التوتر لديك من خلال ممارسة الرياضة، التأمل، واتباع نظام غذائي متوازن.</p>';
+            }
+            content += `<div class="result-card">${lifestyleContent}</div>`;
+
+
+            // --- 3. Symptoms ---
+            if (params.symptoms && params.symptoms !== 'none') {
+                let symptomsList = params.symptoms.replace(/_/g, ' ').replace(/,/g, '، ');
+                let symptomText = `أنت تشكو من الأعراض التالية: <strong>${symptomsList}</strong>. غالبًا ما يتم الإبلاغ عن هذه الأعراض من قبل مرضى الكبد الدهني غير الكحولي ولكنها تقل بشكل ملحوظ مع تحسن نمط الحياة.`;
+                content += `<div class="result-card"><h3>الأعراض</h3><p>${symptomText}</p></div>`;
+            }
+
+
+            container.innerHTML = content;
+        }
+
+        // Run the function when the page loads
+        window.onload = displayResults;
+    </script>
+
+</body>
+</html>
